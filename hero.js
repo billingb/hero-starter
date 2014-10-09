@@ -79,7 +79,7 @@
 //   }
 // };
 
-// // The "Safe Diamond Miner"
+// The opportunist
 var move = function(gameData, helpers) {
   var myHero = gameData.activeHero;
 
@@ -92,16 +92,26 @@ var move = function(gameData, helpers) {
   var distanceToHealthWell = healthWellStats.distance;
   var directionToHealthWell = healthWellStats.direction;
   
+  var teamMemberInfo = helpers.findNearestTeamMemberInfo(gameData);
+  var enemy = helpers.findNearestWeakerEnemy(gameData);
+  var mine = helpers.findNearestNonTeamDiamondMineDirectionAndDistance(gameData);
 
-  if (myHero.health < 40) {
+
+  if (myHero.health < 50) {
     //Heal no matter what if low health
     return directionToHealthWell;
   } else if (myHero.health < 100 && distanceToHealthWell === 1) {
     //Heal if you aren't full health and are close to a health well already
     return directionToHealthWell;
+  } else if(mine.distance === 1) {
+    return mine.direction;
+  } else if(teamMemberInfo.distance === 1) {
+    return teamMemberInfo.direction;
+  } else if(enemy.distance === 1) {
+    return enemy.direction;
   } else {
     //If healthy, go capture a diamond mine!
-    return helpers.findNearestNonTeamDiamondMine(gameData);
+    return mine.direction;
   }
 };
 

@@ -143,6 +143,12 @@ helpers.findNearestObjectDirectionAndDistance = function(board, fromTile, tileCa
 
 // Returns the direction of the nearest non-team diamond mine or false, if there are no diamond mines
 helpers.findNearestNonTeamDiamondMine = function(gameData) {
+  var pathInfoObj = helpers.findNearestNonTeamDiamondMineDirectionAndDistance(gameData);
+  return pathInfoObj.direction;
+}
+
+// Returns the direction and distance of the nearest non-team diamond mine or false, if there are no diamond mines
+helpers.findNearestNonTeamDiamondMineDirectionAndDistance = function(gameData) {
   var hero = gameData.activeHero;
   var board = gameData.board;
 
@@ -160,7 +166,7 @@ helpers.findNearestNonTeamDiamondMine = function(gameData) {
   }, board);
 
   //Return the direction that needs to be taken to achieve the goal
-  return pathInfoObject.direction;
+  return pathInfoObject;
 };
 
 // Returns the nearest unowned diamond mine or false, if there are no diamond mines
@@ -213,7 +219,7 @@ helpers.findNearestWeakerEnemy = function(gameData) {
   //Return the direction that needs to be taken to achieve the goal
   //If no weaker enemy exists, will simply return undefined, which will
   //be interpreted as "Stay" by the game object
-  return pathInfoObject.direction;
+  return pathInfoObject;
 };
 
 // Returns the direction of the nearest enemy
@@ -234,6 +240,12 @@ helpers.findNearestEnemy = function(gameData) {
 // Returns the direction of the nearest friendly champion
 // (or returns false if there are no accessible friendly champions)
 helpers.findNearestTeamMember = function(gameData) {
+  return helpers.findNearestTeamMemberInfo.direction;
+}
+
+// Returns the direction and distanceof the nearest friendly champion
+// (or returns false if there are no accessible friendly champions)
+helpers.findNearestTeamMemberInfo = function(gameData) {
   var hero = gameData.activeHero;
   var board = gameData.board;
 
@@ -243,7 +255,7 @@ helpers.findNearestTeamMember = function(gameData) {
   });
 
   //Return the direction that needs to be taken to achieve the goal
-  return pathInfoObject.direction;
+  return pathInfoObject;
 };
 
 module.exports = helpers;
