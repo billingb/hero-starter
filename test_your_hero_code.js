@@ -37,16 +37,17 @@ var game = new Game(5);
 
 //Add a health well in the middle of the board
 game.addHealthWell(2,2);
+game.addHealthWell(3,3);
 
 //Add diamond mines on either side of the health well
 game.addDiamondMine(2,1);
 game.addDiamondMine(2,3);
 
 //Add your hero in the top left corner of the map (team 0)
-game.addHero(0, 0, 'MyHero', 0);
+game.addHero(2, 0, 'MyHero', 0);
 
 //Add an enemy hero in the bottom left corner of the map (team 1)
-game.addHero(4, 4, 'Enemy', 1);
+game.addHero(0, 0, 'Enemy', 1);
 
 console.log('About to start the game!  Here is what the board looks like:');
 
@@ -56,7 +57,7 @@ console.log('About to start the game!  Here is what the board looks like:');
 game.board.inspect();
 
 //Play a very short practice game
-var turnsToPlay = 15;
+var turnsToPlay = 30;
 
 for (var i=0; i<turnsToPlay; i++) {
   var hero = game.activeHero;
