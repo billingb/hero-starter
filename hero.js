@@ -79,6 +79,57 @@
 //   }
 // };
 
+var hero_helpers = {};
+
+hero_helpers.findNearestTeamMemberInfo = function(gameData, helpers) {
+  var hero = gameData.activeHero;
+  var board = gameData.board;
+
+  //Get the path info object
+  var pathInfoObject = helpers.findNearestObjectDirectionAndDistance(board, hero, function(heroTile) {
+    return heroTile.type === 'Hero' && heroTile.team === hero.team;
+  });
+
+  //Return the direction that needs to be taken to achieve the goal
+  return pathInfoObject;
+};
+
+hero_helpers.findNearestWeakerEnemy = function(gameData, helpers) {
+  var hero = gameData.activeHero;
+  var board = gameData.board;
+
+  //Get the path info object
+  var pathInfoObject = helpers.findNearestObjectDirectionAndDistance(board, hero, function(enemyTile) {
+    return enemyTile.type === 'Hero' && enemyTile.team !== hero.team && enemyTile.health < hero.health;
+  });
+
+  //Return the direction that needs to be taken to achieve the goal
+  //If no weaker enemy exists, will simply return undefined, which will
+  //be interpreted as "Stay" by the game object
+  return pathInfoObject;
+};
+
+hero_helpers.findNearestNonTeamDiamondMineDirectionAndDistance = function(gameData, helpers) {
+  var hero = gameData.activeHero;
+  var board = gameData.board;
+
+  //Get the path info object
+  var pathInfoObject = helpers.findNearestObjectDirectionAndDistance(board, hero, function(mineTile) {
+    if (mineTile.type === 'DiamondMine') {
+      if (mineTile.owner) {
+        return mineTile.owner.team !== hero.team;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }, board);
+
+  //Return the direction that needs to be taken to achieve the goal
+  return pathInfoObject;
+};
+
 // The opportunist
 var move = function(gameData, helpers) {
   var myHero = gameData.activeHero;
@@ -89,9 +140,9 @@ var move = function(gameData, helpers) {
       return true;
     }
   });
-  var teamMemberInfo = helpers.findNearestTeamMemberInfo(gameData);
-  var enemy = helpers.findNearestWeakerEnemy(gameData);
-  var mine = helpers.findNearestNonTeamDiamondMineDirectionAndDistance(gameData);
+  var teamMemberInfo = hero_helpers.findNearestTeamMemberInfo(gameData, helpers);
+  var enemy = hero_helpers.findNearestWeakerEnemy(gameData, helpers);
+  var mine = hero_helpers.findNearestNonTeamDiamondMineDirectionAndDistance(gameData, helpers);
 
 
   if (myHero.health < 60) {
