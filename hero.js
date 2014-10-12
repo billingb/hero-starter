@@ -148,6 +148,8 @@ var move = function(gameData, helpers) {
   if (myHero.health < 60) {
     //Heal no matter what if low health
     return healthWellStats.direction;
+  } else if (enemy.health <= 30 && enemy.health >= 20 && enemy.distance === 1) {
+    return enemy.direction;
   } else if (myHero.health < 100 && healthWellStats.distance === 1) {
     //Heal if you aren't full health and are close to a health well already
     return healthWellStats.direction;
