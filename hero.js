@@ -130,6 +130,16 @@ hero_helpers.findNearestNonTeamDiamondMineDirectionAndDistance = function(gameDa
   return pathInfoObject;
 };
 
+hero_helpers.findNearestGrave = function(gameData, helpers) {
+  return helpers.findNearestObjectDirectionAndDistance(gameData.board, gameData.activeHero, function(tile) {
+    if (tile.subType === 'Bones') {
+      return true;
+	 } else {
+      return false;
+	 }
+  }, gameData.board);
+}
+
 // The opportunist
 var move = function(gameData, helpers) {
   var myHero = gameData.activeHero;
@@ -143,25 +153,44 @@ var move = function(gameData, helpers) {
   var teamMemberInfo = hero_helpers.findNearestTeamMemberInfo(gameData, helpers);
   var enemy = hero_helpers.findNearestWeakerEnemy(gameData, helpers);
   var mine = hero_helpers.findNearestNonTeamDiamondMineDirectionAndDistance(gameData, helpers);
+  var grave = hero_helpers.findNearestGrave(gameData, helpers);
+  var anyEnemy = helpers.findNearestEnemy(gameData);
 
 
-  if (myHero.health < 60) {
+  if (myHero.health < 65) {
     //Heal no matter what if low health
     return healthWellStats.direction;
-  } else if (enemy.health <= 30 && enemy.health >= 20 && enemy.distance === 1) {
+  } else if (enemy && enemy.health <= 30 && enemy.health >= 20 && enemy.distance === 1) {
     return enemy.direction;
   } else if (myHero.health < 100 && healthWellStats.distance === 1) {
     //Heal if you aren't full health and are close to a health well already
     return healthWellStats.direction;
-  } else if(mine.distance === 1) {
+  } else if(mine && mine.distance === 1) {
     return mine.direction;
-  } else if(teamMemberInfo.distance === 1) {
+  } else if(teamMemberInfo && teamMemberInfo.distance === 1) {
     return teamMemberInfo.direction;
-  } else if(enemy.distance === 1) {
+  } else if(enemy && enemy.distance === 1) {
     return enemy.direction;
-  } 
+  } else if(grave && grave.distance === 1) {
+    return grave.direction;
+  } else if(mine && mine.distance <= 3) {
+    return mine.direction;
+  } else if(enemy && enemy.distance <= 2) {
+    return enemy.direction;
+  } else if(mine) {
+    return mine.direction;
+  } else if(myHero.health < 100) {
+    return healthWellStats.direction;
+  } else if(grave && grave.distance <= 3) {
+    return grave.direction;
+  } else if(enemy) {
+    return enemy.direction;
+  } else if(teamMemberInfo) {
+    return teamMemberInfo.direction;
+  } else if(anyEnemy) {
+    return anyEnemy;
+  }
 
-  //Default capture a diamond mine!
   return mine.direction;
 };
 
