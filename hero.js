@@ -81,13 +81,13 @@
 
 var hero_helpers = {};
 
-hero_helpers.findNearestTeamMemberInfo = function(gameData, helpers) {
+hero_helpers.findNearestTeamMemberHealInfo = function(gameData, helpers) {
   var hero = gameData.activeHero;
   var board = gameData.board;
 
   //Get the path info object
   var pathInfoObject = helpers.findNearestObjectDirectionAndDistance(board, hero, function(heroTile) {
-    return heroTile.type === 'Hero' && heroTile.team === hero.team;
+    return heroTile.type === 'Hero' && heroTile.team === hero.team && heroTile.health < 100;
   });
 
   //Return the direction that needs to be taken to achieve the goal
@@ -150,7 +150,7 @@ var move = function(gameData, helpers) {
       return true;
     }
   });
-  var teamMemberInfo = hero_helpers.findNearestTeamMemberInfo(gameData, helpers);
+  var teamMemberInfo = hero_helpers.findNearestTeamMemberHealInfo(gameData, helpers);
   var enemy = hero_helpers.findNearestWeakerEnemy(gameData, helpers);
   var mine = hero_helpers.findNearestNonTeamDiamondMineDirectionAndDistance(gameData, helpers);
   var grave = hero_helpers.findNearestGrave(gameData, helpers);
@@ -177,6 +177,8 @@ var move = function(gameData, helpers) {
     return mine.direction;
   } else if(enemy && enemy.distance <= 2) {
     return enemy.direction;
+  } else if(teamMemberInfo && teamMemberInfo.distance <= 2) {
+    return teamMemberInfo.direction;
   } else if(mine) {
     return mine.direction;
   } else if(myHero.health < 100) {
