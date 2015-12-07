@@ -1,4 +1,6 @@
+Unfortunately this site appears to be offline now...
 
+My clone of the Javascript Battle Hero Code with my changes to play the daily battle game.
 
 ![](https://raw.githubusercontent.com/JavascriptBattle/javascript-battle-website/master/public/img/black-knight.png)
 
